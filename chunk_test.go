@@ -189,7 +189,7 @@ func TestStreamChunkDownloaderFirstRows(t *testing.T) {
 		context.Background(),
 		fetcher,
 		int64(len(firstRows)),
-		[]execResponseRowType{},
+		[]ExecResponseRowType{},
 		firstRows,
 		[]execResponseChunk{})
 	if err := downloader.start(); err != nil {
@@ -231,7 +231,7 @@ func TestStreamChunkDownloaderChunks(t *testing.T) {
 		context.Background(),
 		fetcher,
 		int64(len(firstRows)),
-		[]execResponseRowType{},
+		[]ExecResponseRowType{},
 		firstRows,
 		responseChunks)
 	if err := downloader.start(); err != nil {

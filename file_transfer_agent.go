@@ -1090,7 +1090,7 @@ func (sfa *snowflakeFileTransferAgent) result() (*execResponse, error) {
 			cc := make([]chunkRowType, len(ccrs))
 			populateJSONRowSet(cc, ccrs)
 			data.QueryResultFormat = "json"
-			rt := []execResponseRowType{
+			rt := []ExecResponseRowType{
 				{Name: "source", ByteLength: 10000, Length: 10000, Type: "TEXT", Scale: 0, Nullable: false},
 				{Name: "target", ByteLength: 10000, Length: 10000, Type: "TEXT", Scale: 0, Nullable: false},
 				{Name: "source_size", ByteLength: 64, Length: 64, Type: "FIXED", Scale: 0, Nullable: false},
@@ -1144,7 +1144,7 @@ func (sfa *snowflakeFileTransferAgent) result() (*execResponse, error) {
 			cc := make([]chunkRowType, len(ccrs))
 			populateJSONRowSet(cc, ccrs)
 			data.QueryResultFormat = "json"
-			rt := []execResponseRowType{
+			rt := []ExecResponseRowType{
 				{Name: "file", ByteLength: 10000, Length: 10000, Type: "TEXT", Scale: 0, Nullable: false},
 				{Name: "size", ByteLength: 64, Length: 64, Type: "FIXED", Scale: 0, Nullable: false},
 				{Name: "status", ByteLength: 10000, Length: 10000, Type: "TEXT", Scale: 0, Nullable: false},

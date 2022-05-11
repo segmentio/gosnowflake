@@ -21,7 +21,7 @@ type arrowResultChunk struct {
 	loc              *time.Location
 }
 
-func (arc *arrowResultChunk) decodeArrowChunk(rowType []execResponseRowType, highPrec bool) ([]chunkRowType, error) {
+func (arc *arrowResultChunk) decodeArrowChunk(rowType []ExecResponseRowType, highPrec bool) ([]chunkRowType, error) {
 	logger.Debug("Arrow Decoder")
 	var chunkRows []chunkRowType
 
@@ -38,14 +38,14 @@ func (arc *arrowResultChunk) decodeArrowChunk(rowType []execResponseRowType, hig
 		tmpRows := make([]chunkRowType, numRows)
 
 		for colIdx, col := range columns {
-			destcol := make([]snowflakeValue, numRows)
-			if err = arrowToValue(&destcol, rowType[colIdx], col, arc.loc, highPrec); err != nil {
+			destcol := make([]SnowflakeValue, numRows)
+			if err = ArrowToValue(&destcol, rowType[colIdx], col, arc.loc, highPrec); err != nil {
 				return nil, err
 			}
 
 			for rowIdx := 0; rowIdx < numRows; rowIdx++ {
 				if colIdx == 0 {
-					tmpRows[rowIdx] = chunkRowType{ArrowRow: make([]snowflakeValue, len(columns))}
+					tmpRows[rowIdx] = chunkRowType{ArrowRow: make([]SnowflakeValue, len(columns))}
 				}
 				tmpRows[rowIdx].ArrowRow[colIdx] = destcol[rowIdx]
 			}

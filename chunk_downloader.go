@@ -32,7 +32,7 @@ type chunkDownloader interface {
 	reset()
 	getChunkMetas() []execResponseChunk
 	getQueryResultFormat() resultFormat
-	getRowType() []execResponseRowType
+	getRowType() []ExecResponseRowType
 	setNextChunkDownloader(downloader chunkDownloader)
 	getNextChunkDownloader() chunkDownloader
 	getArrowBatches() []*ArrowBatch
@@ -237,7 +237,7 @@ func (scd *snowflakeChunkDownloader) getNextChunkDownloader() chunkDownloader {
 	return scd.NextDownloader
 }
 
-func (scd *snowflakeChunkDownloader) getRowType() []execResponseRowType {
+func (scd *snowflakeChunkDownloader) getRowType() []ExecResponseRowType {
 	return scd.RowSet.RowType
 }
 
@@ -569,7 +569,7 @@ func (scd *streamChunkDownloader) getNextChunkDownloader() chunkDownloader {
 	return scd.NextDownloader
 }
 
-func (scd *streamChunkDownloader) getRowType() []execResponseRowType {
+func (scd *streamChunkDownloader) getRowType() []ExecResponseRowType {
 	return scd.RowSet.RowType
 }
 
@@ -602,7 +602,7 @@ func newStreamChunkDownloader(
 	ctx context.Context,
 	fetcher streamChunkFetcher,
 	total int64,
-	rowType []execResponseRowType,
+	rowType []ExecResponseRowType,
 	firstRows [][]*string,
 	chunks []execResponseChunk) *streamChunkDownloader {
 	return &streamChunkDownloader{

@@ -188,7 +188,7 @@ func extractTimestamp(srcValue *string) (sec int64, nsec int64, err error) {
 // This is mainly used in fetching data.
 func stringToValue(
 	dest *driver.Value,
-	srcColumnMeta execResponseRowType,
+	srcColumnMeta ExecResponseRowType,
 	srcValue *string,
 	loc *time.Location) error {
 	if srcValue == nil {
@@ -298,9 +298,9 @@ func decimalToBigFloat(num decimal128.Num, scale int64) *big.Float {
 
 // Arrow Interface (Column) converter. This is called when Arrow chunks are
 // downloaded to convert to the corresponding row type.
-func arrowToValue(
-	destcol *[]snowflakeValue,
-	srcColumnMeta execResponseRowType,
+func ArrowToValue(
+	destcol *[]SnowflakeValue,
+	srcColumnMeta ExecResponseRowType,
 	srcValue array.Interface,
 	loc *time.Location,
 	higherPrecision bool) error {
@@ -762,7 +762,7 @@ func higherPrecisionEnabled(ctx context.Context) bool {
 	return ok && d
 }
 
-func arrowToRecord(record array.Record, rowType []execResponseRowType, loc *time.Location) (array.Record, error) {
+func arrowToRecord(record array.Record, rowType []ExecResponseRowType, loc *time.Location) (array.Record, error) {
 	s, err := recordToSchema(record.Schema(), rowType, loc)
 	if err != nil {
 		return nil, err
@@ -974,7 +974,7 @@ func arrowToRecord(record array.Record, rowType []execResponseRowType, loc *time
 	return array.NewRecord(s, cols, numRows), nil
 }
 
-func recordToSchema(sc *arrow.Schema, rowType []execResponseRowType, loc *time.Location) (*arrow.Schema, error) {
+func recordToSchema(sc *arrow.Schema, rowType []ExecResponseRowType, loc *time.Location) (*arrow.Schema, error) {
 	var fields []arrow.Field
 	for i := 0; i < len(sc.Fields()); i++ {
 		f := sc.Field(i)

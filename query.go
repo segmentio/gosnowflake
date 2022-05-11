@@ -29,7 +29,7 @@ type execRequest struct {
 	BindStage    string                       `json:"bindStage,omitempty"`
 }
 
-type execResponseRowType struct {
+type ExecResponseRowType struct {
 	Name       string `json:"name"`
 	ByteLength int64  `json:"byteLength"`
 	Length     int64  `json:"length"`
@@ -72,7 +72,7 @@ type execResponseStageInfo struct {
 type execResponseData struct {
 	// succeed query response data
 	Parameters         []nameValueParameter  `json:"parameters,omitempty"`
-	RowType            []execResponseRowType `json:"rowtype,omitempty"`
+	RowType            []ExecResponseRowType `json:"rowtype,omitempty"`
 	RowSet             [][]*string           `json:"rowset,omitempty"`
 	RowSetBase64       string                `json:"rowsetbase64,omitempty"`
 	Total              int64                 `json:"total,omitempty"`    // java:long

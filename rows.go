@@ -38,15 +38,15 @@ type snowflakeRows struct {
 	errChannel          chan error
 }
 
-type snowflakeValue interface{}
+type SnowflakeValue interface{}
 
 type chunkRowType struct {
 	RowSet   []*string
-	ArrowRow []snowflakeValue
+	ArrowRow []SnowflakeValue
 }
 
 type rowSetType struct {
-	RowType      []execResponseRowType
+	RowType      []ExecResponseRowType
 	JSON         [][]*string
 	RowSetBase64 string
 }
@@ -148,6 +148,10 @@ func (rows *snowflakeRows) GetStatus() queryStatus {
 // GetArrowBatches returns an array of ArrowBatch objects to retrieve data in array.Record format
 func (rows *snowflakeRows) GetArrowBatches() ([]*ArrowBatch, error) {
 	return rows.ChunkDownloader.getArrowBatches(), nil
+}
+
+func (rows *snowflakeRows) GetRowType() ([]ExecResponseRowType, error) {
+	return rows.ChunkDownloader.getRowType(), nil
 }
 
 func (rows *snowflakeRows) Next(dest []driver.Value) (err error) {

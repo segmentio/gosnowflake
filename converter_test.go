@@ -167,7 +167,7 @@ func TestStringToValue(t *testing.T) {
 	var source string
 	var dest driver.Value
 	var err error
-	var rowType *execResponseRowType
+	var rowType *ExecResponseRowType
 	source = "abcdefg"
 
 	types := []string{
@@ -175,7 +175,7 @@ func TestStringToValue(t *testing.T) {
 	}
 
 	for _, tt := range types {
-		rowType = &execResponseRowType{
+		rowType = &ExecResponseRowType{
 			Type: tt,
 		}
 		if err = stringToValue(&dest, *rowType, &source, nil); err == nil {
@@ -194,7 +194,7 @@ func TestStringToValue(t *testing.T) {
 
 	for _, ss := range sources {
 		for _, tt := range types {
-			rowType = &execResponseRowType{
+			rowType = &ExecResponseRowType{
 				Type: tt,
 			}
 			if err = stringToValue(&dest, *rowType, &ss, nil); err == nil {
@@ -204,7 +204,7 @@ func TestStringToValue(t *testing.T) {
 	}
 
 	src := "1549491451.123456789"
-	if err = stringToValue(&dest, execResponseRowType{Type: "timestamp_ltz"}, &src, nil); err != nil {
+	if err = stringToValue(&dest, ExecResponseRowType{Type: "timestamp_ltz"}, &src, nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	} else if ts, ok := dest.(time.Time); !ok {
 		t.Errorf("expected type: 'time.Time', got '%v'", reflect.TypeOf(dest))
@@ -241,7 +241,7 @@ func TestArrayToString(t *testing.T) {
 }
 
 func TestArrowToValue(t *testing.T) {
-	dest := make([]snowflakeValue, 2)
+	dest := make([]SnowflakeValue, 2)
 
 	pool := memory.NewCheckedAllocator(memory.NewGoAllocator())
 	var valids []bool // AppendValues() with an empty valid array adds every value by default
@@ -260,11 +260,11 @@ func TestArrowToValue(t *testing.T) {
 	for _, tc := range []struct {
 		logical  string
 		physical string
-		rowType  execResponseRowType
+		rowType  ExecResponseRowType
 		values   interface{}
 		builder  array.Builder
 		append   func(b array.Builder, vs interface{})
-		compare  func(src interface{}, dst []snowflakeValue) int
+		compare  func(src interface{}, dst []SnowflakeValue) int
 	}{
 		{
 			logical:  "fixed",
@@ -287,7 +287,7 @@ func TestArrowToValue(t *testing.T) {
 					b.(*array.Decimal128Builder).Append(num)
 				}
 			},
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]string)
 				for i := range srcvs {
 					num, ok := stringIntToDecimal(srcvs[i])
@@ -306,7 +306,7 @@ func TestArrowToValue(t *testing.T) {
 		{
 			logical:  "fixed",
 			physical: "number(38,37)",
-			rowType:  execResponseRowType{Scale: 37},
+			rowType:  ExecResponseRowType{Scale: 37},
 			values:   []string{"1.2345678901234567890123456789012345678", "-9.9999999999999999999999999999999999999"},
 			builder:  array.NewDecimal128Builder(pool, &arrow.Decimal128Type{Precision: 38, Scale: 37}),
 			append: func(b array.Builder, vs interface{}) {
@@ -318,7 +318,7 @@ func TestArrowToValue(t *testing.T) {
 					b.(*array.Decimal128Builder).Append(num)
 				}
 			},
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]string)
 				for i := range srcvs {
 					num, ok := stringFloatToDecimal(srcvs[i], 37)
@@ -340,7 +340,7 @@ func TestArrowToValue(t *testing.T) {
 			values:   []int8{1, 2},
 			builder:  array.NewInt8Builder(pool),
 			append:   func(b array.Builder, vs interface{}) { b.(*array.Int8Builder).AppendValues(vs.([]int8), valids) },
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]int8)
 				for i := range srcvs {
 					if int64(srcvs[i]) != dst[i].(int64) {
@@ -356,7 +356,7 @@ func TestArrowToValue(t *testing.T) {
 			values:   []int16{1, 2},
 			builder:  array.NewInt16Builder(pool),
 			append:   func(b array.Builder, vs interface{}) { b.(*array.Int16Builder).AppendValues(vs.([]int16), valids) },
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]int16)
 				for i := range srcvs {
 					if int64(srcvs[i]) != dst[i].(int64) {
@@ -372,7 +372,7 @@ func TestArrowToValue(t *testing.T) {
 			values:   []int32{1, 2},
 			builder:  array.NewInt32Builder(pool),
 			append:   func(b array.Builder, vs interface{}) { b.(*array.Int32Builder).AppendValues(vs.([]int32), valids) },
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]int32)
 				for i := range srcvs {
 					if int64(srcvs[i]) != dst[i].(int64) {
@@ -428,14 +428,14 @@ func TestArrowToValue(t *testing.T) {
 		{
 			logical: "time",
 			values:  []time.Time{time.Now(), time.Now()},
-			rowType: execResponseRowType{Scale: 9},
+			rowType: ExecResponseRowType{Scale: 9},
 			builder: array.NewInt64Builder(pool),
 			append: func(b array.Builder, vs interface{}) {
 				for _, t := range vs.([]time.Time) {
 					b.(*array.Int64Builder).Append(t.UnixNano())
 				}
 			},
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]time.Time)
 				for i := range srcvs {
 					if srcvs[i].Nanosecond() != dst[i].(time.Time).Nanosecond() {
@@ -448,14 +448,14 @@ func TestArrowToValue(t *testing.T) {
 		{
 			logical: "timestamp_ntz",
 			values:  []time.Time{time.Now(), localTime},
-			rowType: execResponseRowType{Scale: 9},
+			rowType: ExecResponseRowType{Scale: 9},
 			builder: array.NewInt64Builder(pool),
 			append: func(b array.Builder, vs interface{}) {
 				for _, t := range vs.([]time.Time) {
 					b.(*array.Int64Builder).Append(t.UnixNano())
 				}
 			},
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]time.Time)
 				for i := range srcvs {
 					if srcvs[i].UnixNano() != dst[i].(time.Time).UnixNano() {
@@ -468,14 +468,14 @@ func TestArrowToValue(t *testing.T) {
 		{
 			logical: "timestamp_ltz",
 			values:  []time.Time{time.Now(), localTime},
-			rowType: execResponseRowType{Scale: 9},
+			rowType: ExecResponseRowType{Scale: 9},
 			builder: array.NewInt64Builder(pool),
 			append: func(b array.Builder, vs interface{}) {
 				for _, t := range vs.([]time.Time) {
 					b.(*array.Int64Builder).Append(t.UnixNano())
 				}
 			},
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]time.Time)
 				for i := range srcvs {
 					if srcvs[i].UnixNano() != dst[i].(time.Time).UnixNano() {
@@ -498,7 +498,7 @@ func TestArrowToValue(t *testing.T) {
 					sb.FieldBuilder(1).(*array.Int32Builder).Append(int32(t.UnixNano()))
 				}
 			},
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]time.Time)
 				for i := range srcvs {
 					if srcvs[i].Unix() != dst[i].(time.Time).Unix() {
@@ -517,7 +517,7 @@ func TestArrowToValue(t *testing.T) {
 					b.(*array.StringBuilder).Append(fmt.Sprint(a))
 				}
 			},
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([][]string)
 				for i, o := range srcvs {
 					if fmt.Sprint(o) != dst[i].(string) {
@@ -536,7 +536,7 @@ func TestArrowToValue(t *testing.T) {
 					b.(*array.StringBuilder).Append(fmt.Sprint(o))
 				}
 			},
-			compare: func(src interface{}, dst []snowflakeValue) int {
+			compare: func(src interface{}, dst []SnowflakeValue) int {
 				srcvs := src.([]testObj)
 				for i, o := range srcvs {
 					if fmt.Sprint(o) != dst[i].(string) {
@@ -560,7 +560,7 @@ func TestArrowToValue(t *testing.T) {
 			meta := tc.rowType
 			meta.Type = tc.logical
 
-			if err := arrowToValue(&dest, meta, arr, localTime.Location(), true); err != nil {
+			if err := ArrowToValue(&dest, meta, arr, localTime.Location(), true); err != nil {
 				t.Fatalf("error: %s", err)
 			}
 
@@ -601,7 +601,7 @@ func TestArrowToRecord(t *testing.T) {
 		logical  string
 		physical string
 		sc       *arrow.Schema
-		rowType  execResponseRowType
+		rowType  ExecResponseRowType
 		values   interface{}
 		nrows    int
 		builder  array.Builder
@@ -651,7 +651,7 @@ func TestArrowToRecord(t *testing.T) {
 		{
 			logical:  "fixed",
 			physical: "number(38,37)",
-			rowType:  execResponseRowType{Scale: 37},
+			rowType:  ExecResponseRowType{Scale: 37},
 			sc:       arrow.NewSchema([]arrow.Field{{Type: &arrow.Decimal128Type{Precision: 38, Scale: 37}}}, nil),
 			values:   []string{"1.2345678901234567890123456789012345678", "-9.9999999999999999999999999999999999999"},
 			nrows:    2,
@@ -719,7 +719,7 @@ func TestArrowToRecord(t *testing.T) {
 		{
 			logical:  "fixed",
 			physical: "float8",
-			rowType:  execResponseRowType{Scale: 1},
+			rowType:  ExecResponseRowType{Scale: 1},
 			sc:       arrow.NewSchema([]arrow.Field{{Type: &arrow.Int8Type{}}}, nil),
 			values:   []int8{10, 16},
 			nrows:    2,
@@ -739,7 +739,7 @@ func TestArrowToRecord(t *testing.T) {
 		{
 			logical:  "fixed",
 			physical: "float16",
-			rowType:  execResponseRowType{Scale: 1},
+			rowType:  ExecResponseRowType{Scale: 1},
 			sc:       arrow.NewSchema([]arrow.Field{{Type: &arrow.Int16Type{}}}, nil),
 			values:   []int16{20, 26},
 			nrows:    2,
@@ -759,7 +759,7 @@ func TestArrowToRecord(t *testing.T) {
 		{
 			logical:  "fixed",
 			physical: "float32",
-			rowType:  execResponseRowType{Scale: 2},
+			rowType:  ExecResponseRowType{Scale: 2},
 			sc:       arrow.NewSchema([]arrow.Field{{Type: &arrow.Int32Type{}}}, nil),
 			values:   []int32{200, 265},
 			nrows:    2,
@@ -779,7 +779,7 @@ func TestArrowToRecord(t *testing.T) {
 		{
 			logical:  "fixed",
 			physical: "float64",
-			rowType:  execResponseRowType{Scale: 5},
+			rowType:  ExecResponseRowType{Scale: 5},
 			sc:       arrow.NewSchema([]arrow.Field{{Type: &arrow.Int64Type{}}}, nil),
 			values:   []int64{12345, 234567},
 			nrows:    2,
@@ -867,7 +867,7 @@ func TestArrowToRecord(t *testing.T) {
 			logical: "timestamp_ntz",
 			values:  []time.Time{time.Now(), localTime},
 			nrows:   2,
-			rowType: execResponseRowType{Scale: 9},
+			rowType: ExecResponseRowType{Scale: 9},
 			sc:      arrow.NewSchema([]arrow.Field{{Type: &arrow.TimestampType{}}}, nil),
 			builder: array.NewTimestampBuilder(pool, &arrow.TimestampType{}),
 			append: func(b array.Builder, vs interface{}) {
@@ -889,7 +889,7 @@ func TestArrowToRecord(t *testing.T) {
 			logical: "timestamp_ltz",
 			values:  []time.Time{time.Now(), localTime},
 			nrows:   2,
-			rowType: execResponseRowType{Scale: 9},
+			rowType: ExecResponseRowType{Scale: 9},
 			sc:      arrow.NewSchema([]arrow.Field{{Type: &arrow.TimestampType{}}}, nil),
 			builder: array.NewTimestampBuilder(pool, &arrow.TimestampType{}),
 			append: func(b array.Builder, vs interface{}) {
@@ -970,7 +970,7 @@ func TestArrowToRecord(t *testing.T) {
 			meta := tc.rowType
 			meta.Type = tc.logical
 
-			transformedRec, err := arrowToRecord(rawRec, []execResponseRowType{meta}, localTime.Location())
+			transformedRec, err := arrowToRecord(rawRec, []ExecResponseRowType{meta}, localTime.Location())
 			if err != nil {
 				t.Fatalf("error: %s", err)
 			}
@@ -1009,7 +1009,7 @@ func TestTimestampLTZLocation(t *testing.T) {
 	src := "1549491451.123456789"
 	var dest driver.Value
 	loc, _ := time.LoadLocation(PSTLocation)
-	if err = stringToValue(&dest, execResponseRowType{Type: "timestamp_ltz"}, &src, loc); err != nil {
+	if err = stringToValue(&dest, ExecResponseRowType{Type: "timestamp_ltz"}, &src, loc); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 	ts, ok := dest.(time.Time)
@@ -1020,7 +1020,7 @@ func TestTimestampLTZLocation(t *testing.T) {
 		t.Errorf("expected location to be %v, got '%v'", loc, ts.Location())
 	}
 
-	if err = stringToValue(&dest, execResponseRowType{Type: "timestamp_ltz"}, &src, nil); err != nil {
+	if err = stringToValue(&dest, ExecResponseRowType{Type: "timestamp_ltz"}, &src, nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 	ts, ok = dest.(time.Time)

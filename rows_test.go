@@ -98,7 +98,7 @@ func TestRowsWithoutChunkDownloader(t *testing.T) {
 	for i = 0; i < 10; i++ {
 		cc = append(cc, []*string{&sts1, &sts2})
 	}
-	rt := []execResponseRowType{
+	rt := []ExecResponseRowType{
 		{Name: "c1", ByteLength: 10, Length: 10, Type: "FIXED", Scale: 0, Nullable: true},
 		{Name: "c2", ByteLength: 100000, Length: 100000, Type: "TEXT", Scale: 0, Nullable: false},
 	}
@@ -164,7 +164,7 @@ func TestRowsWithChunkDownloader(t *testing.T) {
 		v2 := fmt.Sprintf("Test%v", i)
 		cc = append(cc, []*string{&v1, &v2})
 	}
-	rt := []execResponseRowType{
+	rt := []ExecResponseRowType{
 		{Name: "c1", ByteLength: 10, Length: 10, Type: "FIXED", Scale: 0, Nullable: true},
 		{Name: "c2", ByteLength: 100000, Length: 100000, Type: "TEXT", Scale: 0, Nullable: false},
 	}
@@ -243,7 +243,7 @@ func TestRowsWithChunkDownloaderError(t *testing.T) {
 		v2 := fmt.Sprintf("Test%v", i)
 		cc = append(cc, []*string{&v1, &v2})
 	}
-	rt := []execResponseRowType{
+	rt := []ExecResponseRowType{
 		{Name: "c1", ByteLength: 10, Length: 10, Type: "FIXED", Scale: 0, Nullable: true},
 		{Name: "c2", ByteLength: 100000, Length: 100000, Type: "TEXT", Scale: 0, Nullable: false},
 	}
@@ -321,7 +321,7 @@ func TestRowsWithChunkDownloaderErrorFail(t *testing.T) {
 		v2 := fmt.Sprintf("Test%v", i)
 		cc = append(cc, []*string{&v1, &v2})
 	}
-	rt := []execResponseRowType{
+	rt := []ExecResponseRowType{
 		{Name: "c1", ByteLength: 10, Length: 10, Type: "FIXED", Scale: 0, Nullable: true},
 		{Name: "c2", ByteLength: 100000, Length: 100000, Type: "TEXT", Scale: 0, Nullable: false},
 	}

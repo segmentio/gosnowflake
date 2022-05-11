@@ -18,6 +18,7 @@ type SnowflakeResult interface {
 	GetQueryID() string
 	GetStatus() queryStatus
 	GetArrowBatches() ([]*ArrowBatch, error)
+	GetRowType() ([]ExecResponseRowType, error)
 }
 
 type snowflakeResult struct {
@@ -52,6 +53,13 @@ func (res *snowflakeResult) GetStatus() queryStatus {
 }
 
 func (res *snowflakeResult) GetArrowBatches() ([]*ArrowBatch, error) {
+	return nil, &SnowflakeError{
+		Number:  ErrNotImplemented,
+		Message: errMsgNotImplemented,
+	}
+}
+
+func (res *snowflakeResult) GetRowType() ([]ExecResponseRowType, error) {
 	return nil, &SnowflakeError{
 		Number:  ErrNotImplemented,
 		Message: errMsgNotImplemented,
