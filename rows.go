@@ -38,6 +38,7 @@ type snowflakeRows struct {
 	errChannel          chan error
 }
 
+// SnowflakeValue is a generic value
 type SnowflakeValue interface{}
 
 type chunkRowType struct {
@@ -150,6 +151,7 @@ func (rows *snowflakeRows) GetArrowBatches() ([]*ArrowBatch, error) {
 	return rows.ChunkDownloader.getArrowBatches(), nil
 }
 
+// GetRowType returns an array of response column metadata objects
 func (rows *snowflakeRows) GetRowType() ([]ExecResponseRowType, error) {
 	return rows.ChunkDownloader.getRowType(), nil
 }

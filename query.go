@@ -29,6 +29,7 @@ type execRequest struct {
 	BindStage    string                       `json:"bindStage,omitempty"`
 }
 
+// ExecResponseRowType holds type metadata for a response column
 type ExecResponseRowType struct {
 	Name       string `json:"name"`
 	ByteLength int64  `json:"byteLength"`

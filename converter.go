@@ -296,7 +296,7 @@ func decimalToBigFloat(num decimal128.Num, scale int64) *big.Float {
 	return new(big.Float).Quo(f, s)
 }
 
-// Arrow Interface (Column) converter. This is called when Arrow chunks are
+// ArrowToValue is Arrow Interface (Column) converter. This is called when Arrow chunks are
 // downloaded to convert to the corresponding row type.
 func ArrowToValue(
 	destcol *[]SnowflakeValue,
