@@ -5,17 +5,17 @@ on:
       - master
 jobs:
   whitesource:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-large
     if: ${{ github.event.pull_request.user.login == 'sfc-gh-snyk-sca-sa' }}
     steps:
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # v3
       with:
         ref: ${{ github.event.pull_request.head.ref }}
         fetch-depth: 0
 
     - name: checkout action
-      uses: actions/checkout@v3
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # v3
       with:
         repository: snowflakedb/whitesource-actions
         token: ${{ secrets.WHITESOURCE_ACTION_TOKEN }}

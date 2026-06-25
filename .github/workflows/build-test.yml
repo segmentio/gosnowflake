@@ -22,16 +22,16 @@ on:
 
 jobs:
     build-test-linux:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-latest-large
         strategy:
             matrix:
                 cloud: [ 'AWS', 'AZURE', 'GCP' ]
                 go: [ '1.18', '1.17' ]
         name: ${{ matrix.cloud }} Go ${{ matrix.go }} on Ubuntu
         steps:
-            - uses: actions/checkout@v1
+            - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e  # v1
             - name: Setup go
-              uses: actions/setup-go@v2
+              uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492  # v2
               with:
                   go-version: ${{ matrix.go }}
             - name: Format, Lint
@@ -51,9 +51,9 @@ jobs:
                 go: [ '1.18', '1.17' ]
         name: ${{ matrix.cloud }} Go ${{ matrix.go }} on Mac
         steps:
-            - uses: actions/checkout@v1
+            - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e  # v1
             - name: Setup go
-              uses: actions/setup-go@v2
+              uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492  # v2
               with:
                   go-version: ${{ matrix.go }}
             - name: Format, Lint
@@ -66,22 +66,22 @@ jobs:
                 CLOUD_PROVIDER: ${{ matrix.cloud }}
               run: ./ci/test.sh
     build-test-windows:
-        runs-on: windows-latest
+        runs-on: windows-latest-large
         strategy:
             matrix:
                 cloud: [ 'AWS', 'AZURE', 'GCP' ]
                 go: [ '1.18', '1.17' ]
         name: ${{ matrix.cloud }} Go ${{ matrix.go }} on Windows
         steps:
-            - uses: actions/checkout@v1
+            - uses: actions/checkout@50fbc622fc4ef5163becd7fab6573eac35f8462e  # v1
             - name: Setup go
-              uses: actions/setup-go@v2
+              uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492  # v2
               with:
                   go-version: ${{ matrix.go }}
             - name: Format, Lint
               shell: cmd
               run: ci\\build.bat
-            - uses: actions/setup-python@v1
+            - uses: actions/setup-python@0f07f7f756721ebd886c2462646a35f78a8bc4de  # v1
               with:
                 python-version: '3.x'
                 architecture: 'x64'

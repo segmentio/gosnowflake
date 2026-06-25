@@ -6,11 +6,11 @@ on:
 jobs:
   semgrep:
     name: Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-large
     if: (github.actor != 'dependabot[bot]')
     steps:
-      - uses: actions/checkout@v2
-      - uses: returntocorp/semgrep-action@v1
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5  # v2
+      - uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d  # v1
         with:
           auditOn: push
           publishUrl: https://semgrep.snowflake.com
